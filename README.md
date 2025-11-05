@@ -40,6 +40,8 @@ Application de gestion de contacts avec architecture microservices, déployée s
 
 ## 🚀 Démarrage Rapide
 
+> **📖 [Guide de démarrage complet](QUICKSTART.md)** - Tout ce qu'il faut pour démarrer en 3 minutes
+
 ### Prérequis
 
 - Docker & Docker Compose

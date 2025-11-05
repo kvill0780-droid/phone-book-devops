@@ -3,6 +3,7 @@ k8s/base/secrets.yaml
 secrets/
 *.pem
 *.key
+.env
 
 # IDE
 .idea/
