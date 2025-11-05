@@ -15,7 +15,12 @@ echo "📦 Creating namespace..."
 kubectl apply -f base/namespace.yaml
 
 echo "🔐 Creating secrets..."
-kubectl apply -f base/secrets.yaml
+if [ -f base/secrets.yaml ]; then
+    kubectl apply -f base/secrets.yaml
+else
+    echo "⚠️  secrets.yaml not found, using secrets.example.yaml"
+    kubectl apply -f base/secrets.example.yaml
+fi
 
 echo "⚙️  Creating ConfigMap..."
 kubectl apply -f base/configmap.yaml
