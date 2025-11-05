@@ -1,0 +1,103 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend
+  namespace: phone-book
+  labels:
+    app: backend
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8080
+      targetPort: 8080
+      protocol: TCP
+  selector:
+    app: backend
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+  namespace: phone-book
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8080"
+        prometheus.io/path: "/actuator/prometheus"
+    spec:
+      containers:
+        - name: backend
+          image: projetdevops-backend:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SPRING_DATASOURCE_URL
+              value: "jdbc:mysql://mysql:3306/phonebook?useSSL=false&allowPublicKeyRetrieval=true"
+            - name: SPRING_DATASOURCE_USERNAME
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: MYSQL_USER
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secret
+                  key: MYSQL_PASSWORD
+            - name: SPRING_DATA_REDIS_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: REDIS_HOST
+            - name: SPRING_DATA_REDIS_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: REDIS_PORT
+            - name: SPRING_PROFILES_ACTIVE
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: SPRING_PROFILES_ACTIVE
+            - name: SPRING_JPA_HIBERNATE_DDL_AUTO
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: SPRING_JPA_HIBERNATE_DDL_AUTO
+            - name: MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE
+          # Probes désactivées temporairement pour debug
+          # livenessProbe:
+          #   httpGet:
+          #     path: /actuator/health/liveness
+          #     port: 8080
+          #   initialDelaySeconds: 180
+          #   periodSeconds: 10
+          #   timeoutSeconds: 5
+          #   failureThreshold: 5
+          # readinessProbe:
+          #   httpGet:
+          #     path: /actuator/health/readiness
+          #     port: 8080
+          #   initialDelaySeconds: 150
+          #   periodSeconds: 10
+          #   timeoutSeconds: 5
+          #   failureThreshold: 5
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "500m"
+            limits:
+              memory: "1Gi"
+              cpu: "1000m"

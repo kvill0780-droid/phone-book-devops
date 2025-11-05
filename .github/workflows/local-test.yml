@@ -1,0 +1,25 @@
+name: Local CI Test
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-local:
+    name: Build Docker Images Locally
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Build Backend
+        run: |
+          cd spring-phone-book
+          docker build -t projetdevops-backend:test .
+      
+      - name: Build Frontend
+        run: |
+          cd phone-book-frontend
+          docker build -t projetdevops-frontend:test .
+      
+      - name: Test images
+        run: |
+          docker images | grep projetdevops

@@ -1,0 +1,37 @@
+# Secrets
+k8s/base/secrets.yaml
+secrets/
+*.pem
+*.key
+
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# Backend
+spring-phone-book/target/
+spring-phone-book/.mvn/
+spring-phone-book/mvnw
+spring-phone-book/mvnw.cmd
+
+# Frontend
+phone-book-frontend/node_modules/
+phone-book-frontend/dist/
+phone-book-frontend/.env.local
+
+# Docker
+.dockerignore
+
+# Logs
+*.log
+logs/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temp
+*.tmp
+*.swp
+*~
